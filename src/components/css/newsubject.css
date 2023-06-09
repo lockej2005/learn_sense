@@ -1,0 +1,31 @@
+.welcome-container {
+color: #ffffff;
+padding: 20px;
+text-align: center;
+}
+
+.welcome-title {
+font-size: 32px;
+}
+
+.welcome-content {
+margin-top: 20px;
+}
+
+.welcome-subtitle {
+font-size: 18px;
+}
+
+.welcome-button {
+background-color: #007bff;
+color: #ffffff;
+border: none;
+padding: 10px 20px;
+margin-top: 10px;
+border-radius: 5px;
+cursor: pointer;
+}
+
+.welcome-button:hover {
+background-color: #0056b3;
+}
