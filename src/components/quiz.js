@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import './css/quiz.css';
 
-const apiKey = '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';
+const apiKey = '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';
 
 async function sendChatGPTRequest(prompt) {
   try {
