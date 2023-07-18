@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import './css/quiz.css';
 
-const apiKey = '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';
+
+const apiKey = process.env.OPENAI_KEY;
 
 async function sendChatGPTRequest(prompt) {
   try {
@@ -11,12 +12,12 @@ async function sendChatGPTRequest(prompt) {
       'https://api.openai.com/v1/chat/completions',
       {
         model: 'gpt-3.5-turbo',
-        temperature: 0.3,
+        temperature: 1,
         messages: [
           {
             role: 'system',
             content:
-              'You are writing a unique multiple-choice question that presents a real-world problem that will test a student’s ability to apply their understanding of a cirriculum area given in the prompt to solve that problem. The response you give will be filtered through a program that needs to be able to identify the separate sections of the question so it can display it appropriately for the student to understand, answer and see what is the correct answer. Your response should follow this template exactly, nothing in your response should be different to the text after the colon apart from the text inside each respective "<>": 1<Question>A<First Possible Answer>B<Second Possible Answer>C<Third Possible Answer>D<Fourth and final Possible Answer>6<Explanation of which of the above 4 answers was correct>7<Just the letter value of the correct option>. Include the "<" and ">" before and after each section as shown in the template so that my program can filter through you response and seperate each respective section. Make Sure your answer does not differ from this template and only includes the 7 components each as described, each time you generate a response select one of the A, B, C or D options as the correct answer. Each section must have value as the first character followed by a "<" then a ">" as the last character, do not use any other characters because the program only looks the values inside the "<" and ">".'
+              'Write a multiple choice question that presents a unique real-world problem that tests a student’s ability to apply their understanding of this curriculum area given in the prompt, the response must be in JSON format.'
           },
           {
             role: 'user',
@@ -45,6 +46,7 @@ function QuizPage() {
   const [quizSections, setQuizSections] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [showResult, setShowResult] = useState(false);
+  const [submitted, setSubmitted] = useState(false); // Added submitted state
 
   useEffect(() => {
     async function fetchQuizText() {
@@ -58,9 +60,6 @@ function QuizPage() {
         const isValidResponse = countOpenTags >= 7 && countCloseTags >= 7;
 
         // Generate a new response if the initial response is not valid
-        if (!isValidResponse) {
-          response = await sendChatGPTRequest(prompt);
-        }
 
         console.log(response);
         const sections = response.split('<').map((section) => section.split('>')[0]);
@@ -71,17 +70,20 @@ function QuizPage() {
     }
 
     fetchQuizText();
-  }, []);
+  }, []); // Empty dependency array
 
   // Create individual variables for each section
   const [question, answer1, answer2, answer3, answer4, explanation, letterValue] = quizSections.slice(1, 8);
 
   const handleOptionSelect = (option) => {
-    setSelectedOption(option);
+    if (!submitted) {
+      setSelectedOption(option);
+    }
   };
 
   const handleSubmit = () => {
     setShowResult(true);
+    setSubmitted(true); // Set submitted state to true
   };
 
   const isAnswerCorrect = () => {
@@ -92,7 +94,6 @@ function QuizPage() {
   const B = "B";
   const C = "C";
   const D = "D";
-
   return (
     <div className="quiz-container">
       <h1 className="quiz-title">Welcome to the Weekly quiz for {subject}</h1>
@@ -120,7 +121,7 @@ function QuizPage() {
             Explanation: {explanation}
           </p>
         )}
-        <button className="quiz-button" onClick={handleSubmit}>
+        <button className="quiz-button" onClick={handleSubmit} disabled={submitted}>
           Submit
         </button>
       </div>

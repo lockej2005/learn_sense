@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import FrontPage from './frontpage';
-import RegisterPage from './accounts/registerpage';
-import LoginPage from './accounts/loginpage'
-import Dashboard from './components/dashboard'
-import NewSubject from './components/newsubject'
-import Quiz from './components/quiz'
+import FrontPage from './frontpage.js';
+import RegisterPage from './accounts/registerpage.js';
+import LoginPage from './accounts/loginpage.js'
+import Dashboard from './components/dashboard.js'
+import NewSubject from './components/newsubject.js'
+import Quiz from './components/quiz.js'
 
 function App() {
   return (
